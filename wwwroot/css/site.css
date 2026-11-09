@@ -1,31 +1,81 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* RaceDay Custom Theme: Red, Green, White */
+:root {
+    --primary-red: #D32F2F; /* Sporty Red */
+    --primary-green: #2E7D32; /* Finish Line Green */
+    --bg-white: #FFFFFF;
+    --text-dark: #212121;
+    --light-grey: #F5F5F5;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--bg-white);
+    color: var(--text-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Navbar */
+.navbar-custom {
+    background-color: var(--bg-white);
+    border-bottom: 4px solid var(--primary-red);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.navbar-brand {
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
 }
+
+.brand-red {
+    color: var(--primary-red);
+}
+
+.brand-green {
+    color: var(--primary-green);
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 600;
+}
+
+    .nav-link:hover {
+        color: var(--primary-red) !important;
+    }
+
+/* Buttons */
+.btn-primary-custom {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+    .btn-primary-custom:hover {
+        background-color: #B71C1C;
+        color: white;
+    }
+
+.btn-secondary-custom {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+    .btn-secondary-custom:hover {
+        background-color: #1B5E20;
+        color: white;
+    }
+
+/* Cards (For Events) */
+.event-card {
+    border-left: 5px solid var(--primary-green);
+    background-color: var(--light-grey);
+    transition: transform 0.2s;
+}
+
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }

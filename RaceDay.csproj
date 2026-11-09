@@ -7,7 +7,7 @@
 		<UserSecretsId>dfdbcea3-22d9-4599-95bd-0a9b9cd7ec7c</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerfileContext>.</DockerfileContext>
-		<NoWarn>NU1902</NoWarn>
+		<NoWarn>NU1902;NU1903</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
