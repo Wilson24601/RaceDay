@@ -8,5 +8,7 @@
         public decimal Distance { get; set; }
         public int VenueId { get; set; }
         public int CategoryId { get; set; }
+
+        public string? BannerImageUrl { get; set; }
     }
 }

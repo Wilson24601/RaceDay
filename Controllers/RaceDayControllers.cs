@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Models;
+using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Http;
 
 namespace RaceDay.Controllers
 {
@@ -17,12 +19,12 @@ namespace RaceDay.Controllers
         public RaceDayController(RaceDayDbContext context)
         {
             _context = context;
-            _passwordHasher = new PasswordHasher<User>(); 
+            _passwordHasher = new PasswordHasher<User>();
         }
 
-        
+
         // AUTHENTICATION ENDPOINTS
-        
+
 
         [HttpPost("auth/register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
@@ -35,7 +37,7 @@ namespace RaceDay.Controllers
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email,
-                Role = request.Role 
+                Role = request.Role
             };
 
             // Hash the password using the built-in hasher
@@ -59,11 +61,11 @@ namespace RaceDay.Controllers
             if (verificationResult == PasswordVerificationResult.Failed)
                 return Unauthorized("Invalid credentials");
 
-           
-            return Ok(new { Token = "dummy-token-for-swagger-testing", Role = user.Role });
+
+            return Ok(new { Token = "dummy-token-for-swagger-testing", Role = user.Role, UserId = user.UserId });
         }
 
-        
+
         // PARTICIPANT ENDPOINTS
 
         [HttpGet("participants")]
@@ -80,9 +82,24 @@ namespace RaceDay.Controllers
             return Ok(user);
         }
 
-        
+        [HttpPut("participants/{id}")]
+        public async Task<IActionResult> UpdateParticipant(int id, [FromBody] UpdateProfileDto request)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Phone = request.Phone;
+            user.ProfilePictureUrl = request.ProfilePictureUrl;
+
+            await _context.SaveChangesAsync();
+            return Ok("Profile updated successfully");
+        }
+
+
         // VENUE ENDPOINTS
-        
+
         [HttpGet("venues")]
         public async Task<IActionResult> GetVenues()
         {
@@ -97,8 +114,17 @@ namespace RaceDay.Controllers
             return StatusCode(201, "Venue added");
         }
 
+        // CATEGORY ENDPOINTS
+
+        [HttpGet("categories")]
+        public async Task<IActionResult> GetCategories()
+        {
+            return Ok(await _context.Categories.ToListAsync());
+        }
+
+
         // RACE (EVENT) ENDPOINTS
-        
+
 
         [HttpGet("races")]
         public async Task<IActionResult> GetRaces()
@@ -125,16 +151,17 @@ namespace RaceDay.Controllers
                 Distance = dto.Distance,
                 VenueId = dto.VenueId,
                 CategoryId = dto.CategoryId,
-                OrganiserId = 1 
+                OrganiserId = 1,
+                BannerImageUrl = dto.BannerImageUrl
             };
             _context.Events.Add(newEvent);
             await _context.SaveChangesAsync();
             return StatusCode(201, "Race added");
         }
 
-        
+
         // REGISTRATION (ENROLMENT) ENDPOINTS
-        
+
         [HttpGet("registrations")]
         public async Task<IActionResult> GetRegistrations()
         {
@@ -166,9 +193,9 @@ namespace RaceDay.Controllers
             return Ok(results);
         }
 
-        
+
         // RESULT ENDPOINTS
-        
+
 
         [HttpPost("results")]
         public async Task<IActionResult> RecordResult([FromBody] ResultDto dto)
@@ -183,6 +210,31 @@ namespace RaceDay.Controllers
             _context.Results.Add(result);
             await _context.SaveChangesAsync();
             return StatusCode(201, "Result recorded");
+        }
+
+        // AZURE BLOB STORAGE ENDPOINT
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            // NOTE: For the presentation, we will use a mock Azure connection string.
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=mockaccount;AccountKey=mockkey;EndpointSuffix=core.windows.net";
+            string containerName = "event-banners";
+
+            try
+            {
+                // For the demo 
+                string mockUrl = $"https://racedaystorage.blob.core.windows.net/{containerName}/{Guid.NewGuid()}.jpg";
+
+                return Ok(new { Url = mockUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

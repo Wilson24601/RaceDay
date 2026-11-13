@@ -16,8 +16,9 @@ namespace RaceDay.Models
         public string PasswordHash { get; set; }
         [Required]
         public string Role { get; set; } // "Organiser" or "Participant"
-
-        // Added the ? here to make it optional!
         public string? Phone { get; set; }
+
+        // Add this line
+        public string? ProfilePictureUrl { get; set; }
     }
 }
