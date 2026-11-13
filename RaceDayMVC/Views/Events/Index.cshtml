@@ -1,0 +1,40 @@
+﻿@model IEnumerable<RaceDayMVC.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "My Events";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2 class="fw-bold mb-0">
+            <span class="brand-red">MY</span> <span class="brand-green">EVENTS</span>
+        </h2>
+        <a asp-action="Create" class="btn btn-primary-custom">Create New Event</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var ev in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card event-card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-dark">@ev.EventName</h5>
+                            <p class="text-muted mb-1"> @ev.EventDate.ToString("dd MMM yyyy")</p>
+                            <p class="text-muted mb-1"> @ev.VenueName</p>
+                            <p class="text-muted mb-3"> @ev.Distance km</p>
+
+                            <!-- New button added here -->
+                            <a asp-controller="Events" asp-action="EventEnrolments" asp-route-id="@ev.EventId" class="btn btn-secondary-custom w-100 mt-2">View Enrolments</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">You haven't created any events yet.</div>
+    }
+</div>

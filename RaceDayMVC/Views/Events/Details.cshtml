@@ -1,0 +1,58 @@
+﻿@model RaceDayMVC.Models.EventViewModel
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h2 class="fw-bold">
+                        <span class="brand-red">EVENT</span> <span class="brand-green">DETAILS</span>
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Display the uploaded image if it exists -->
+                    @if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+                    {
+                        <img src="@Model.BannerImageUrl" alt="Event Banner" class="img-fluid rounded mb-4 w-100 shadow-sm" style="max-height: 400px; object-fit: cover;" />
+                    }
+
+                    <h3 class="mb-3">@Model.EventName</h3>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted"><strong>Date:</strong> @Model.EventDate.ToString("dd MMM yyyy")</p>
+                            <p class="mb-1 text-muted"><strong>Location:</strong> @Model.VenueName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted"><strong>Distance:</strong> @Model.Distance km</p>
+                            <p class="mb-1 text-muted"><strong>Status:</strong> <span class="badge bg-success">Open</span></p>
+                        </div>
+                    </div>
+
+                    @if (Context.Session.GetString("UserRole") == "Participant")
+                    {
+                        <form asp-controller="Events" asp-action="Enrol" method="post">
+                            <input type="hidden" name="eventId" value="@Model.EventId" />
+                            <button type="submit" class="btn btn-primary-custom btn-lg w-100">Enrol Now</button>
+                        </form>
+                    }
+                    else if (Context.Session.GetString("UserEmail") == null)
+                    {
+                        <div class="alert alert-warning text-center">
+                            You must <a asp-controller="Account" asp-action="Login" class="fw-bold">Log in</a> as a Participant to enrol.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a asp-controller="Home" asp-action="Index" class="text-decoration-none">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>

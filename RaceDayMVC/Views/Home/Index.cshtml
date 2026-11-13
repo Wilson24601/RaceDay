@@ -1,0 +1,107 @@
+﻿@model IEnumerable<RaceDayMVC.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Hero Section -->
+<div class="row align-items-center mb-5" style="min-height: 60vh;">
+    <div class="col-lg-7">
+        <span class="badge bg-success mb-3 px-3 py-2 text-uppercase">Road Running • Walking • Cycling</span>
+
+        <h1 class="display-3 fw-bold mb-3" style="line-height: 1.1;">
+            YOUR ULTIMATE <span class="brand-green">RACE DAY</span><br />
+            AWAITS <span class="brand-red">YOU.</span>
+        </h1>
+
+        <p class="lead text-muted mb-4">
+            RaceDay connects South Africa's road sports community. We empower Organisers to effortlessly build and manage races, while giving Participants the tools to discover new events, lock in their entries, and chase their next personal best.
+        </p>
+
+        <div class="d-flex gap-3 mt-4">
+            @if (Context.Session.GetString("UserEmail") == null)
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-primary-custom btn-lg px-4">Create a free account</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-dark btn-lg px-4">Log in</a>
+            }
+            else
+            {
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary-custom btn-lg px-4">View Events</a>
+            }
+        </div>
+    </div>
+
+    <!-- Right side graphic (uses a placeholder sports image for now) -->
+    <div class="col-lg-5 d-none d-lg-block text-center">
+        <div class="p-5 rounded-circle" style="background: linear-gradient(135deg, rgba(211, 47, 47, 0.1), rgba(46, 125, 50, 0.1));">
+            <h1 style="font-size: 10rem; margin: 0;">🏃‍♂️</h1>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row text-center mt-5 pt-5 border-top">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm p-3">
+            <div class="card-body">
+                <h5 class="card-title fw-bold brand-red">Find a Race</h5>
+                <p class="card-text text-muted">Browse upcoming events, view categories, and find the perfect challenge for your fitness level.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm p-3">
+            <div class="card-body">
+                <h5 class="card-title fw-bold brand-green">Enrol in Seconds</h5>
+                <p class="card-text text-muted">Once you find your race, sign up and secure your spot instantly. Track your enrolment status online.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm p-3">
+            <div class="card-body">
+                <h5 class="card-title fw-bold brand-red">Track Results</h5>
+                <p class="card-text text-muted">After the race, view your finish times, positions, and personal race history all in one dashboard.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Events Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="fw-bold mb-4 border-bottom pb-2">
+            <span class="brand-red">UPCOMING</span> <span class="brand-green">EVENTS</span>
+        </h3>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var ev in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card event-card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-dark">@ev.EventName</h5>
+                        <p class="text-muted mb-1">
+                             @ev.EventDate.ToString("dd MMM yyyy")
+                        </p>
+                        <p class="text-muted mb-1">
+                             @ev.VenueName
+                        </p>
+                        <p class="text-muted mb-3">
+                             @ev.Distance km
+                        </p>
+                        <a asp-controller="Events" asp-action="Details" asp-route-id="@ev.EventId" class="btn btn-secondary-custom w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info">No upcoming events found. Check back later!</div>
+        </div>
+    }
+</div>

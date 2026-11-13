@@ -1,0 +1,54 @@
+﻿@model IEnumerable<RaceDayMVC.Models.MyResultViewModel>
+
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2 class="fw-bold mb-0">
+            <span class="brand-red">MY</span> <span class="brand-green">RESULTS</span>
+        </h2>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark">Find More Races</a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Event Name</th>
+                            <th>Date</th>
+                            <th>Finish Time</th>
+                            <th>Position</th>
+                            <th class="pe-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@item.EventName</td>
+                                <td>@item.EventDate.ToString("dd MMM yyyy")</td>
+                                <td class="text-success fw-bold">@item.FinishTime</td>
+                                <td><span class="badge bg-dark">@item.Position</span></td>
+                                <td class="pe-4">
+                                    <span class="badge bg-success">@item.ResultStatus</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5">
+            <h4>You don't have any recorded results yet.</h4>
+            <p class="mb-0">Once an Organiser records your finish time, it will appear here!</p>
+        </div>
+    }
+</div>

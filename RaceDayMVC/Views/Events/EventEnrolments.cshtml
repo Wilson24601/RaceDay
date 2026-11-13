@@ -1,0 +1,79 @@
+﻿@model IEnumerable<RaceDayMVC.Models.ParticipantEnrolmentViewModel>
+
+@{
+    ViewData["Title"] = "Event Enrolments";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h2 class="fw-bold mb-0">
+            <span class="brand-red">EVENT</span> <span class="brand-green">ENROLMENTS</span>
+        </h2>
+        <a asp-action="Index" class="btn btn-outline-dark">Back to My Events</a>
+    </div>
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-success">@ViewBag.Message</div>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Participant</th>
+                            <th>Email Address</th>
+                            <th>Status</th>
+                            <th class="pe-4" style="width: 300px;">Record Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@item.ParticipantName</td>
+                                <td>@item.ParticipantEmail</td>
+                                <td>
+                                    @if (item.EnrolmentStatus == "Confirmed")
+                                    {
+                                        <span class="badge bg-success">Confirmed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">@item.EnrolmentStatus</span>
+                                    }
+                                </td>
+                                <td class="pe-4">
+                                    <!-- Form to submit the result -->
+                                    <form asp-controller="Events" asp-action="SaveResult" method="post" class="d-flex gap-2">
+                                        <input type="hidden" name="EnrolmentId" value="@item.EnrolmentId" />
+                                        <input type="hidden" name="EventId" value="@ViewBag.EventId" />
+
+                                        <input type="text" name="FinishTime" class="form-control form-control-sm" placeholder="e.g. 02:15:30" required style="width: 110px;" />
+                                        <input type="number" name="Position" class="form-control form-control-sm" placeholder="Pos" required style="width: 70px;" />
+
+                                        <button type="submit" class="btn btn-sm btn-primary-custom">Save</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5">
+            <h4>No participants have enrolled yet.</h4>
+            <p class="mb-0">Check back later!</p>
+        </div>
+    }
+</div>
